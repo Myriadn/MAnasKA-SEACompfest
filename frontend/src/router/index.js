@@ -1,13 +1,30 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
+import MenuView from '@/views/MenuView.vue'
+import SubscriptionView from '@/views/SubscriptionView.vue'
+import ContactView from '@/views/ContactView.vue'
 
 const routes = [
   {
     path: '/',
-    name: 'home',
+    name: 'Home',
     component: HomeView,
   },
-  // Route lainnya akan ditambahkan di level berikutnya
+  {
+    path: '/menu',
+    name: 'Menu',
+    component: MenuView,
+  },
+  {
+    path: '/subscription',
+    name: 'Subscription',
+    component: SubscriptionView,
+  },
+  {
+    path: '/contact',
+    name: 'Contact',
+    component: ContactView,
+  },
 ]
 
 const router = createRouter({
