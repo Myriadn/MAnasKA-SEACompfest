@@ -16,14 +16,14 @@ const routes = [
     component: MenuView,
   },
   {
-    path: '/subscription',
-    name: 'Subscription',
-    component: SubscriptionView,
-  },
-  {
     path: '/contact',
     name: 'Contact',
     component: ContactView,
+  },
+  {
+    path: '/subscription',
+    name: 'Subscription',
+    component: SubscriptionView,
   },
 ]
 
