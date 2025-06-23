@@ -40,6 +40,8 @@
 </template>
 
 <script>
+import { sanitize } from 'dompurify'
+
 export default {
   name: 'TestimonialForm',
   data() {
@@ -53,6 +55,14 @@ export default {
   },
   methods: {
     submitForm() {
+      // Sanitasi input sebelum diproses
+      const sanitizedData = {
+        name: sanitize(this.form.name),
+        review: sanitize(this.form.review),
+        rating: this.form.rating,
+      }
+      this.$emit('submit-testimonial', sanitizedData)
+
       this.$emit('submit-testimonial', { ...this.form })
       this.form = {
         name: '',

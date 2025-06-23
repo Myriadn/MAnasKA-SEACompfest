@@ -9,6 +9,8 @@
       <!-- Testimonial Form -->
       <TestimonialForm @submit-testimonial="addTestimonial" />
 
+      <p class="text-gray-600 italic mb-6">"{{ safeHtml(testimonial.review) }}"</p>
+
       <!-- Testimonial Carousel -->
       <div class="max-w-4xl mx-auto mt-12">
         <div class="carousel w-full">
@@ -62,6 +64,7 @@
 
 <script>
 import TestimonialForm from '@/components/TestimonialForm.vue'
+import { sanitize } from 'dompurify' // Import DOMPurify
 
 export default {
   name: 'TestimonialsSection',
@@ -96,6 +99,10 @@ export default {
     }
   },
   methods: {
+    // Method untuk sanitasi HTML
+    safeHtml(html) {
+      return sanitize(html)
+    },
     addTestimonial(testimonial) {
       this.testimonials.unshift({
         id: Date.now(),

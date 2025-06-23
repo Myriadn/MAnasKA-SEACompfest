@@ -3,16 +3,31 @@
     <h2 class="text-3xl font-bold mb-8 text-center">Subscribe to a Meal Plan</h2>
 
     <form @submit.prevent="submitForm">
+      <input type="hidden" name="csrf_token" :value="csrfToken" />
       <!-- Name -->
       <div class="mb-6">
         <label class="block text-lg font-medium mb-2">Full Name *</label>
-        <input type="text" v-model="form.name" class="input input-bordered w-full" required />
+        <input
+          type="text"
+          v-model="form.name"
+          class="input input-bordered w-full"
+          required
+          pattern="[A-Za-z .'-]+"
+          title="Name should only contain letters, spaces, and characters like ., ', -"
+        />
       </div>
 
       <!-- Phone -->
       <div class="mb-6">
         <label class="block text-lg font-medium mb-2">Phone Number *</label>
-        <input type="tel" v-model="form.phone" class="input input-bordered w-full" required />
+        <input
+          type="tel"
+          v-model="form.phone"
+          class="input input-bordered w-full"
+          required
+          pattern="[0-9]{10,15}"
+          title="Phone number should be 10-15 digits"
+        />
       </div>
 
       <!-- Plan Selection -->
@@ -59,6 +74,9 @@
             <span>{{ meal.label }}</span>
           </label>
         </div>
+        <p v-if="form.mealTypes.length === 0 && formSubmitted" class="text-error text-sm mt-1">
+          Please select at least one meal type
+        </p>
       </div>
 
       <!-- Delivery Days -->
@@ -79,6 +97,9 @@
             <span>{{ day.label }}</span>
           </label>
         </div>
+        <p v-if="form.days.length === 0 && formSubmitted" class="text-error text-sm mt-1">
+          Please select at least one delivery day
+        </p>
       </div>
 
       <!-- Allergies -->
@@ -100,6 +121,11 @@
         </div>
       </div>
 
+      <!-- Error Message -->
+      <div v-if="errorMessage" class="alert alert-error mb-4">
+        {{ errorMessage }}
+      </div>
+
       <button type="submit" class="btn btn-primary btn-lg w-full" :disabled="isSubmitting">
         <span v-if="isSubmitting" class="loading loading-spinner"></span>
         {{ isSubmitting ? 'Processing...' : 'Subscribe Now' }}
@@ -110,11 +136,14 @@
 
 <script>
 import { SubscriptionService } from '@/services/subscriptionService'
+import { generateCsrfToken, getCsrfToken } from '@/middleware/csrf'
+import { validateInput } from '@/middleware/inputValidation'
 
 export default {
   name: 'SubscriptionForm',
   data() {
     return {
+      csrfToken: '',
       form: {
         name: '',
         phone: '',
@@ -124,6 +153,8 @@ export default {
         allergies: '',
       },
       isSubmitting: false,
+      errorMessage: '',
+      formSubmitted: false,
       plans: [
         { name: 'Diet Plan', price: 'Rp30.000 / meal', description: 'Low calorie meals' },
         { name: 'Protein Plan', price: 'Rp40.000 / meal', description: 'High protein meals' },
@@ -144,6 +175,10 @@ export default {
         { label: 'Sunday', value: 'sunday' },
       ],
     }
+  },
+  created() {
+    // Generate CSRF token on component creation
+    this.csrfToken = generateCsrfToken()
   },
   computed: {
     calculatedPrice() {
@@ -173,38 +208,57 @@ export default {
         minimumFractionDigits: 0,
       }).format(price)
     },
+
     async submitForm() {
-      // Validasi
-      if (!this.form.plan || this.form.mealTypes.length === 0 || this.form.days.length === 0) {
-        alert('Please fill all required fields')
+      this.formSubmitted = true
+      this.errorMessage = ''
+
+      // Form validation
+      if (this.form.mealTypes.length === 0 || this.form.days.length === 0) {
+        this.errorMessage = 'Please fill in all required fields'
         return
       }
 
       this.isSubmitting = true
 
       try {
-        await SubscriptionService.createSubscription({
-          ...this.form,
+        // Sanitize all inputs
+        const sanitizedForm = {
+          name: validateInput(this.form.name, 'name'),
+          phone: validateInput(this.form.phone, 'phone'),
+          plan: this.form.plan,
+          mealTypes: this.form.mealTypes,
+          days: this.form.days,
+          allergies: validateInput(this.form.allergies, 'optional'),
           totalPrice: this.calculatedPrice,
-        })
-
-        alert('Subscription created successfully!')
-
-        // Reset form
-        this.form = {
-          name: '',
-          phone: '',
-          plan: '',
-          mealTypes: [],
-          days: [],
-          allergies: '',
+          csrf_token: getCsrfToken(),
         }
+
+        await SubscriptionService.createSubscription(sanitizedForm)
+
+        // Show success message and reset form
+        alert('Subscription created successfully!')
+        this.resetForm()
       } catch (error) {
-        console.error('Error creating subscription:', error)
-        alert(`Failed to create subscription: ${error.message}`)
+        console.error('Submission error:', error)
+        this.errorMessage = error.message || 'An error occurred while creating your subscription'
       } finally {
         this.isSubmitting = false
       }
+    },
+
+    resetForm() {
+      this.form = {
+        name: '',
+        phone: '',
+        plan: '',
+        mealTypes: [],
+        days: [],
+        allergies: '',
+      }
+      this.formSubmitted = false
+      // Generate new CSRF token
+      this.csrfToken = generateCsrfToken()
     },
   },
 }

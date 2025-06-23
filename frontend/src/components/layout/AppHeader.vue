@@ -27,6 +27,35 @@
               {{ item.label }}
             </router-link>
           </li>
+
+          <!-- Profile Dropdown untuk user login -->
+          <div v-if="user" class="dropdown dropdown-end ml-4">
+            <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+              <div
+                class="w-10 rounded-full bg-primary text-primary-content flex items-center justify-center"
+              >
+                <span>{{ userInitials }}</span>
+              </div>
+            </div>
+            <ul
+              tabindex="0"
+              class="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52"
+            >
+              <li>
+                <router-link to="/profile" class="justify-between">
+                  Profile
+                  <span class="badge">New</span>
+                </router-link>
+              </li>
+              <li><a @click="handleLogout">Logout</a></li>
+            </ul>
+          </div>
+
+          <!-- Auth buttons untuk user belum login -->
+          <div v-else class="flex items-center space-x-4 ml-4">
+            <router-link to="/login" class="btn btn-outline btn-primary btn-sm">Login</router-link>
+            <router-link to="/register" class="btn btn-primary btn-sm">Register</router-link>
+          </div>
         </ul>
       </div>
 
@@ -61,6 +90,22 @@
                 {{ item.label }}
               </router-link>
             </li>
+
+            <!-- Auth section untuk mobile -->
+            <li v-if="user">
+              <router-link to="/profile">Profile</router-link>
+            </li>
+            <li v-if="user">
+              <a @click="handleLogout">Logout</a>
+            </li>
+            <template v-if="!user">
+              <li>
+                <router-link to="/login">Login</router-link>
+              </li>
+              <li>
+                <router-link to="/register">Register</router-link>
+              </li>
+            </template>
           </ul>
         </div>
       </div>
@@ -69,8 +114,46 @@
 </template>
 
 <script>
+import { useUserStore } from '@/stores/user'
+import { supabase } from '@/supabase/client'
+import { computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+
 export default {
   name: 'AppHeader',
+  setup() {
+    const userStore = useUserStore()
+    const router = useRouter()
+
+    // Load user on component mount
+    onMounted(async () => {
+      await userStore.loadUser()
+    })
+
+    // Handle logout
+    const handleLogout = async () => {
+      await supabase.auth.signOut()
+      userStore.setUser(null)
+      router.push('/login')
+    }
+
+    // Get user initials for avatar
+    const userInitials = computed(() => {
+      if (!userStore.user?.user_metadata?.full_name) return 'U'
+      const names = userStore.user.user_metadata.full_name.split(' ')
+      return names
+        .slice(0, 2)
+        .map((name) => name[0])
+        .join('')
+        .toUpperCase()
+    })
+
+    return {
+      user: computed(() => userStore.user),
+      userInitials,
+      handleLogout,
+    }
+  },
   data() {
     return {
       navItems: [
@@ -83,3 +166,10 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.router-link-active {
+  color: var(--color-primary);
+  font-weight: bold;
+}
+</style>
