@@ -65,6 +65,12 @@ const routes = [
     component: () => import('@/views/ProfileView.vue'),
     meta: { requiresAuth: true },
   },
+  {
+    path: '/dashboard',
+    name: 'UserDashboard',
+    component: () => import('@/views/UserDashboardView.vue'),
+    meta: { requiresAuth: true },
+  },
   // {
   //   path: '/schema-checker',
   //   name: 'SchemaChecker',

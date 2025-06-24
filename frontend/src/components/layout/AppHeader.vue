@@ -42,10 +42,16 @@
               class="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52"
             >
               <li>
-                <router-link to="/profile" class="justify-between">
-                  Profile
-                  <span class="badge">New</span>
+                <router-link to="/profile" class="justify-between"> Profile </router-link>
+              </li>
+              <li>
+                <router-link to="/dashboard" class="justify-between">
+                  My Subscriptions
+                  <span class="badge badge-primary">New</span>
                 </router-link>
+              </li>
+              <li v-if="isAdmin">
+                <router-link to="/admin" class="justify-between"> Admin Dashboard </router-link>
               </li>
               <li><a @click="handleLogout">Logout</a></li>
             </ul>
@@ -96,6 +102,12 @@
               <router-link to="/profile">Profile</router-link>
             </li>
             <li v-if="user">
+              <router-link to="/dashboard">My Subscriptions</router-link>
+            </li>
+            <li v-if="user && isAdmin">
+              <router-link to="/admin">Admin Dashboard</router-link>
+            </li>
+            <li v-if="user">
               <a @click="handleLogout">Logout</a>
             </li>
             <template v-if="!user">
@@ -116,7 +128,7 @@
 <script>
 import { useUserStore } from '@/stores/user'
 import { supabase } from '@/supabase/client'
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 export default {
@@ -124,10 +136,35 @@ export default {
   setup() {
     const userStore = useUserStore()
     const router = useRouter()
+    const isAdmin = ref(false)
+
+    // Check if current user is an admin
+    const checkAdminStatus = async () => {
+      if (!userStore.user) return false
+
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('is_admin')
+          .eq('id', userStore.user.id)
+          .single()
+
+        if (error || !data) return false
+
+        isAdmin.value = data.is_admin === true
+        return data.is_admin === true
+      } catch (error) {
+        console.error('Error checking admin status:', error)
+        return false
+      }
+    }
 
     // Load user on component mount
     onMounted(async () => {
       await userStore.loadUser()
+      if (userStore.user) {
+        await checkAdminStatus()
+      }
     })
 
     // Handle logout
@@ -150,6 +187,7 @@ export default {
 
     return {
       user: computed(() => userStore.user),
+      isAdmin,
       userInitials,
       handleLogout,
     }
