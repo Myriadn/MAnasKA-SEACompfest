@@ -4,9 +4,9 @@
       <img :src="plan.image" alt="Meal Plan" class="w-full h-48 object-cover" />
     </figure>
     <div class="card-body">
-      <h2 class="card-title text-primary">{{ plan.name }}</h2>
+      <h2 class="card-title text-primary break-words">{{ plan.name }}</h2>
       <p class="text-xl font-bold text-secondary">{{ plan.price }}</p>
-      <p>{{ plan.description }}</p>
+      <p class="line-clamp-3">{{ plan.description }}</p>
       <div class="card-actions mt-4">
         <button class="btn btn-primary text-white" @click="$emit('show-details')">
           See Details

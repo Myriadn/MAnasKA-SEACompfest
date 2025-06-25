@@ -12,6 +12,9 @@
     <!-- Features/Services Section -->
     <FeaturesSection />
 
+    <!-- Testimonials Section -->
+    <TestimonialsSection />
+
     <!-- Contact Section -->
     <ContactSection />
 
@@ -26,6 +29,7 @@ import AppFooter from '@/components/layout/AppFooter.vue'
 import HeroSection from '@/components/sections/HeroSection.vue'
 import AboutSection from '@/components/sections/AboutSection.vue'
 import FeaturesSection from '@/components/sections/FeaturesSection.vue'
+import TestimonialsSection from '@/components/sections/TestimonialsSection.vue'
 import ContactSection from '@/components/sections/ContactSection.vue'
 
 export default {
@@ -36,6 +40,7 @@ export default {
     HeroSection,
     AboutSection,
     FeaturesSection,
+    TestimonialsSection,
     ContactSection,
   },
 }

@@ -1,13 +1,12 @@
 <template>
-  <section class="py-16 bg-base-100">
-    <div class="container mx-auto px-4">
-      <div class="text-center mb-12">
-        <div class="badge badge-outline badge-primary mb-4">Testimonials</div>
-        <h2 class="text-4xl font-bold text-gray-800 mb-6">What Our Customers Say</h2>
-      </div>
+  <div class="min-h-screen flex flex-col">
+    <AppHeader />
 
-      <!-- Testimonial Form -->
-      <TestimonialForm @submit-testimonial="addTestimonial" />
+    <div class="container mx-auto px-4 py-16">
+      <h1 class="text-4xl font-bold text-center mb-2">Customer Testimonials</h1>
+      <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+        See what our customers have to say about our meal plans and service.
+      </p>
 
       <!-- Loading state -->
       <div v-if="loading" class="flex justify-center items-center py-12">
@@ -36,22 +35,28 @@
         </div>
       </div>
 
-      <!-- Testimonial Carousel -->
-      <div v-else class="max-w-4xl mx-auto mt-12">
-        <div v-if="testimonials.length === 0" class="text-center py-8">
-          <p class="text-lg text-gray-600">
-            No testimonials yet. Be the first to share your experience!
-          </p>
+      <!-- Content -->
+      <div v-else>
+        <!-- Add your own testimonial -->
+        <div class="mb-16">
+          <TestimonialForm @submit-testimonial="addTestimonial" />
         </div>
-        <div v-else class="carousel w-full">
-          <div
-            v-for="(testimonial, index) in testimonials"
-            :id="`testimonial-${index}`"
-            :key="testimonial.id"
-            class="carousel-item w-full"
-          >
-            <div class="card bg-base-100 shadow-xl">
-              <div class="card-body items-center text-center">
+
+        <!-- All testimonials -->
+        <div>
+          <h2 class="text-2xl font-bold mb-6 text-center">What Our Customers Say</h2>
+          <div v-if="testimonials.length === 0" class="text-center py-8">
+            <p class="text-lg text-gray-600">
+              No testimonials yet. Be the first to share your experience!
+            </p>
+          </div>
+          <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div
+              v-for="testimonial in testimonials"
+              :key="testimonial.id"
+              class="card bg-base-100 shadow-xl"
+            >
+              <div class="card-body">
                 <div class="rating mb-4">
                   <input
                     v-for="i in 5"
@@ -60,10 +65,11 @@
                     :name="`rating-${testimonial.id}`"
                     class="mask mask-star-2 bg-orange-400"
                     :checked="i <= testimonial.rating"
+                    disabled
                   />
                 </div>
                 <p class="text-gray-600 italic mb-6">"{{ safeHtml(testimonial.review) }}"</p>
-                <div class="flex items-center">
+                <div class="flex items-center mt-auto">
                   <div class="avatar">
                     <div class="w-12 rounded-full bg-gray-200 flex items-center justify-center">
                       <span class="text-gray-700 font-bold">{{ testimonial.name.charAt(0) }}</span>
@@ -71,35 +77,32 @@
                   </div>
                   <div class="ml-4">
                     <h4 class="font-bold text-lg">{{ testimonial.name }}</h4>
+                    <p class="text-sm text-gray-500">{{ formatDate(testimonial.created_at) }}</p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="flex justify-center w-full py-2 gap-2">
-          <a
-            v-for="(testimonial, index) in testimonials"
-            :key="testimonial.id + '-nav'"
-            :href="`#testimonial-${index}`"
-            class="btn btn-xs"
-          >
-            {{ index + 1 }}
-          </a>
-        </div>
       </div>
     </div>
-  </section>
+
+    <AppFooter />
+  </div>
 </template>
 
 <script>
+import AppHeader from '@/components/layout/AppHeader.vue'
+import AppFooter from '@/components/layout/AppFooter.vue'
 import TestimonialForm from '@/components/TestimonialForm.vue'
-import DOMPurify from 'dompurify' // Import DOMPurify
 import { TestimonialService } from '@/services/testimonialService'
+import DOMPurify from 'dompurify'
 
 export default {
-  name: 'TestimonialsSection',
+  name: 'TestimonialsView',
   components: {
+    AppHeader,
+    AppFooter,
     TestimonialForm,
   },
   data() {
@@ -112,7 +115,7 @@ export default {
   async created() {
     try {
       this.loading = true
-      this.testimonials = await TestimonialService.getLatestTestimonials(5)
+      this.testimonials = await TestimonialService.getAllTestimonials()
       this.loading = false
     } catch (err) {
       this.error = 'Failed to load testimonials: ' + err.message
@@ -120,10 +123,22 @@ export default {
     }
   },
   methods: {
-    // Method untuk sanitasi HTML
+    // Method for HTML sanitization
     safeHtml(html) {
       return DOMPurify.sanitize(html)
     },
+
+    // Format date to readable format
+    formatDate(dateString) {
+      const date = new Date(dateString)
+      return new Intl.DateTimeFormat('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      }).format(date)
+    },
+
+    // Add new testimonial
     async addTestimonial(testimonial) {
       try {
         const newTestimonial = await TestimonialService.addTestimonial(testimonial)
@@ -135,3 +150,20 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.avatar {
+  display: flex !important;
+}
+
+.avatar > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.avatar > div > span {
+  line-height: 1;
+}
+</style>

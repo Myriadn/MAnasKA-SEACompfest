@@ -60,7 +60,9 @@
             </div>
           </td>
           <td>
-            <span class="badge badge-outline badge-primary">{{ subscription.plan }}</span>
+            <div>
+              <span class="plan-badge">{{ subscription.plan }}</span>
+            </div>
           </td>
           <td>
             <div class="flex flex-wrap gap-1">
@@ -121,7 +123,10 @@
 
             <div>
               <h4 class="font-bold text-lg">Plan Details</h4>
-              <p><strong>Plan:</strong> {{ selectedSubscription.plan }}</p>
+              <p>
+                <strong>Plan:</strong>
+                <span class="plan-badge">{{ selectedSubscription.plan }}</span>
+              </p>
               <p>
                 <strong>Total Price:</strong> {{ formatPrice(selectedSubscription.total_price) }}
               </p>
@@ -251,3 +256,20 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.avatar {
+  display: flex !important;
+}
+
+.avatar > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.avatar > div > span {
+  line-height: 1;
+}
+</style>

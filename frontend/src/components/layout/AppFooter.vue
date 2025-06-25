@@ -1,60 +1,72 @@
 <template>
-  <footer class="footer sm:footer-horizontal bg-base-200 text-base-content p-10">
+  <footer class="bg-base-200 text-base-content py-12 px-6">
     <!-- Services, Company, Legal Sections -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 w-full">
-      <!-- Services -->
-      <div class="text-center md:text-left">
-        <span class="footer-title text-base font-semibold opacity-100 block mb-4">SERVICES</span>
-        <div class="flex flex-col space-y-2">
-          <a class="link link-hover hover:text-primary transition-colors">Meal Plans</a>
-          <a class="link link-hover hover:text-primary transition-colors">Corporate Catering</a>
-          <a class="link link-hover hover:text-primary transition-colors">Special Diets</a>
-          <a class="link link-hover hover:text-primary transition-colors">Nutrition Consulting</a>
+    <div class="container mx-auto">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-y-10 sm:gap-x-8">
+        <!-- Services -->
+        <div class="flex flex-col items-center sm:items-start">
+          <span class="footer-title mb-6">SERVICES</span>
+          <ul class="footer-links flex flex-col space-y-3 items-center sm:items-start">
+            <li><a class="link-hover">Meal Plans</a></li>
+            <li><a class="link-hover">Corporate Catering</a></li>
+            <li><a class="link-hover">Special Diets</a></li>
+            <li><a class="link-hover">Nutrition Consulting</a></li>
+          </ul>
         </div>
-      </div>
 
-      <!-- Company -->
-      <div class="text-center md:text-left">
-        <span class="footer-title text-base font-semibold opacity-100 block mb-4">COMPANY</span>
-        <div class="flex center flex-col space-y-2">
-          <a class="link link-hover hover:text-primary transition-colors">About us</a>
-          <a class="link link-hover hover:text-primary transition-colors">Contact</a>
-          <a class="link link-hover hover:text-primary transition-colors">Careers</a>
-          <a class="link link-hover hover:text-primary transition-colors">Press kit</a>
+        <!-- Company -->
+        <div class="flex flex-col items-center sm:items-start">
+          <span class="footer-title mb-6">COMPANY</span>
+          <ul class="footer-links flex flex-col space-y-3 items-center sm:items-start">
+            <li><a class="link-hover">About us</a></li>
+            <li><a class="link-hover">Contact</a></li>
+            <li><a class="link-hover">Careers</a></li>
+            <li><a class="link-hover">Press kit</a></li>
+          </ul>
         </div>
-      </div>
 
-      <!-- Legal -->
-      <div class="text-center md:text-left">
-        <span class="footer-title text-base font-semibold opacity-100 block mb-4">LEGAL</span>
-        <div class="flex flex-col space-y-2">
-          <a class="link link-hover hover:text-primary transition-colors">Terms of use</a>
-          <a class="link link-hover hover:text-primary transition-colors">Privacy policy</a>
-          <a class="link link-hover hover:text-primary transition-colors">Cookie policy</a>
+        <!-- Legal -->
+        <div class="flex flex-col items-center sm:items-start">
+          <span class="footer-title mb-6">LEGAL</span>
+          <ul class="footer-links flex flex-col space-y-3 items-center sm:items-start">
+            <li><a class="link-hover">Terms of use</a></li>
+            <li><a class="link-hover">Privacy policy</a></li>
+            <li><a class="link-hover">Cookie policy</a></li>
+          </ul>
         </div>
       </div>
     </div>
   </footer>
 
-  <footer class="footer bg-base-200 text-base-content border-t border-base-300 px-10 py-4">
+  <footer class="bg-base-200 text-base-content border-t border-base-300 py-6 px-6">
     <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
       <!-- Branding dan Copyright -->
-      <aside class="flex items-center mb-4 md:mb-0">
+      <aside class="flex items-center mb-6 md:mb-0">
         <div class="avatar mr-4">
-          <div class="w-12 rounded-full bg-success-content p-2">
-            <span class="text-success text-xl font-bold">SEA</span>
+          <div class="w-12 rounded-full bg-primary/10 p-2">
+            <img
+              src="@/assets/food-tray.png"
+              alt="SEA Catering Logo"
+              class="w-full h-full object-cover"
+            />
           </div>
         </div>
         <div>
-          <p class="font-bold">SEA Catering</p>
-          <p>Healthy meals delivered across Indonesia</p>
+          <p class="font-bold text-lg">SEA Catering</p>
+          <p class="text-sm">Healthy meals delivered across Indonesia</p>
         </div>
       </aside>
 
       <!-- Copyright -->
-      <div class="text-center md:text-right">
-        <p>© 2023 SEA Catering. All rights reserved.</p>
-        <p>Contact: manager@seacatering.id | +62 812-3456-789</p>
+      <div class="text-center md:text-right text-sm">
+        <p class="mb-1">© 2023 SEA Catering. All rights reserved.</p>
+        <p>
+          Contact:
+          <a href="mailto:manager@seacatering.id" class="hover:text-primary"
+            >manager@seacatering.id</a
+          >
+          | <a href="tel:+6281234567890" class="hover:text-primary">+62 812-3456-789</a>
+        </p>
       </div>
     </div>
   </footer>
@@ -67,7 +79,7 @@ export default {
 </script>
 
 <style scoped>
-.footer {
+footer {
   background-color: #1a1a1a;
   color: #e0e0e0;
 }
@@ -78,16 +90,68 @@ export default {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  margin-bottom: 1rem;
+  position: relative;
+  display: inline-block;
+}
+
+.footer-title::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 2px;
+  background-color: #3cb371;
+}
+
+@media (min-width: 640px) {
+  .footer-title::after {
+    left: 0;
+    transform: none;
+  }
+}
+
+.link-hover {
+  position: relative;
+  transition: all 0.3s ease;
+  padding: 4px 0;
 }
 
 .link-hover:hover {
   color: #3cb371;
   transform: translateX(5px);
-  transition: transform 0.3s ease;
 }
 
 .border-t {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-links li {
+  width: 100%;
+  text-align: center;
+}
+
+.footer-links li a {
+  display: inline-block;
+  padding: 4px 0;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.footer-links li a:hover {
+  color: #3cb371;
+}
+
+@media (min-width: 640px) {
+  .footer-links li {
+    text-align: left;
+  }
 }
 </style>

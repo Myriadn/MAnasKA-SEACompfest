@@ -29,3 +29,35 @@ h3 {
 .btn {
   @apply transition-all duration-300;
 }
+
+/* Custom badge styles for plan display */
+.badge {
+  @apply transition-all duration-200;
+}
+
+.badge.badge-primary {
+  @apply font-medium;
+}
+
+/* Plan badge specific styling */
+.plan-badge {
+  @apply px-4 py-2 rounded-full bg-primary/10 text-primary font-medium border border-primary;
+  display: inline-block;
+  width: auto;
+  min-width: 100px;
+  text-align: center;
+  word-break: normal;
+  white-space: normal;
+  margin: 2px 0;
+}
+
+/* Make plans stand out more in tables */
+td .plan-badge {
+  @apply shadow-sm hover:shadow-md hover:bg-primary/20;
+  transition: all 0.2s ease;
+}
+
+/* Add more spacing in modals/detail views */
+p .plan-badge {
+  @apply ml-1;
+}

@@ -2,15 +2,52 @@
   <div class="min-h-screen flex flex-col">
     <AppHeader />
     <div class="container mx-auto px-4 py-16">
-      <h1 class="text-4xl font-bold text-center mb-12">Our Meal Plans</h1>
+      <h1 class="text-4xl font-bold text-center mb-6">Our Meal Plans</h1>
+      <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+        Choose from our selection of carefully crafted meal plans designed to meet your nutritional
+        needs and taste preferences.
+      </p>
 
-      <div class="grid md:grid-cols-3 gap-8">
+      <!-- Loading state -->
+      <div v-if="loading" class="flex justify-center items-center py-12">
+        <div class="loading loading-spinner loading-lg text-primary"></div>
+        <span class="ml-4 text-lg">Loading meal plans...</span>
+      </div>
+
+      <!-- Error state -->
+      <div v-else-if="error" class="alert alert-error shadow-lg max-w-2xl mx-auto">
+        <div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6 flex-shrink-0"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <span>{{ error }}</span>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div v-else class="grid md:grid-cols-3 gap-8">
         <MealPlanCard
           v-for="(plan, index) in mealPlans"
-          :key="index"
+          :key="plan.id || index"
           :plan="plan"
           @show-details="openModal(plan)"
         />
+      </div>
+
+      <!-- No meal plans found -->
+      <div v-if="!loading && !error && mealPlans.length === 0" class="text-center py-12">
+        <p class="text-xl text-gray-600">No meal plans found.</p>
       </div>
     </div>
     <AppFooter />
@@ -50,6 +87,7 @@
 import AppHeader from '@/components/layout/AppHeader.vue'
 import AppFooter from '@/components/layout/AppFooter.vue'
 import MealPlanCard from '@/components/MealPlanCard.vue'
+import { MealPlanService } from '@/services/mealPlanService'
 
 export default {
   name: 'MenuView',
@@ -60,52 +98,22 @@ export default {
   },
   data() {
     return {
-      mealPlans: [
-        {
-          id: 1,
-          name: 'Diet Plan',
-          price: 'Rp30.000 / meal',
-          description: 'Low calorie meals designed for weight loss',
-          image:
-            'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-          details: [
-            '1200-1500 calories per day',
-            'Balanced macronutrients',
-            'Vegetarian options available',
-            'Weekly nutritionist consultation',
-          ],
-        },
-        {
-          id: 2,
-          name: 'Protein Plan',
-          price: 'Rp40.000 / meal',
-          description: 'High protein meals for muscle building',
-          image:
-            'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-          details: [
-            '30g+ protein per meal',
-            'Lean meat and plant-based proteins',
-            'Customizable protein sources',
-            'Post-workout recovery options',
-          ],
-        },
-        {
-          id: 3,
-          name: 'Royal Plan',
-          price: 'Rp60.000 / meal',
-          description: 'Premium gourmet meals with premium ingredients',
-          image:
-            'https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-          details: [
-            'Chef-designed meals',
-            'Organic and locally sourced ingredients',
-            'Wide variety of international cuisines',
-            'Priority delivery',
-          ],
-        },
-      ],
+      mealPlans: [],
+      loading: true,
+      error: null,
       showModal: false,
       selectedPlan: null,
+    }
+  },
+  async created() {
+    try {
+      this.loading = true
+      this.mealPlans = await MealPlanService.getAllMealPlans()
+      this.loading = false
+    } catch (error) {
+      this.error = 'Failed to load meal plans: ' + error.message
+      this.loading = false
+      console.error('Error loading meal plans:', error)
     }
   },
   methods: {

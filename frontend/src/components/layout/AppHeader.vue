@@ -4,8 +4,14 @@
       <div class="flex-1">
         <router-link to="/" class="flex items-center">
           <div class="avatar">
-            <div class="w-16 rounded-full bg-success-content p-2">
-              <span class="text-success text-2xl font-bold">SEA</span>
+            <div class="w-16 rounded-full p-2">
+              <img
+                src="@/assets/food-tray.png"
+                alt="SEA Catering Logo"
+                class="w-full h-full object-cover"
+              />
+              <!-- Uncomment this line if you want to use text instead of an image -->
+              <!-- <span class="text-success text-2xl font-bold">SEA</span> -->
             </div>
           </div>
           <div class="ml-4">
@@ -197,6 +203,7 @@ export default {
       navItems: [
         { path: '/', label: 'Home' },
         { path: '/menu', label: 'Meal Plans' },
+        { path: '/testimonials', label: 'Testimonials' },
         { path: '/subscription', label: 'Subscription' },
         { path: '/contact', label: 'Contact Us' },
       ],
@@ -209,5 +216,20 @@ export default {
 .router-link-active {
   color: var(--color-primary);
   font-weight: bold;
+}
+
+.avatar {
+  display: flex !important;
+}
+
+.avatar > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.avatar > div > span {
+  line-height: 1;
 }
 </style>

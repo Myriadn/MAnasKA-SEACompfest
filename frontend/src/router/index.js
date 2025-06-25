@@ -7,6 +7,7 @@ import HomeView from '@/views/HomeView.vue'
 import MenuView from '@/views/MenuView.vue'
 import SubscriptionView from '@/views/SubscriptionView.vue'
 import ContactView from '@/views/ContactView.vue'
+import TestimonialsView from '@/views/TestimonialsView.vue'
 import SchemaCheckerView from '@/views/SchemaCheckerView.vue'
 
 const routes = [
@@ -24,6 +25,11 @@ const routes = [
     path: '/contact',
     name: 'Contact',
     component: ContactView,
+  },
+  {
+    path: '/testimonials',
+    name: 'Testimonials',
+    component: TestimonialsView,
   },
   {
     path: '/subscription',
