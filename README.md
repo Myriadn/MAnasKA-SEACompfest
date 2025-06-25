@@ -55,31 +55,6 @@ Aplikasi ini menerapkan berbagai teknik keamanan untuk melindungi data pengguna:
   - Validasi client-side dan server-side
   - Penolakan input kosong atau invalid sebelum disimpan ke database
 
-### Implementasi Keamanan
-
-1. **Middleware**:
-
-   - `inputValidation.js`: Sanitasi input untuk mencegah XSS
-   - `csrf.js`: Penanganan token CSRF
-   - `auth.js`: Verifikasi autentikasi pengguna
-
-2. **Keamanan API**:
-
-   - Token CSRF untuk semua request non-GET
-   - Supabase client dengan JWT authentication
-   - Interceptor API untuk keamanan request
-
-3. **Password Security**:
-
-   - Validasi kompleksitas password (uppercase, lowercase, angka, simbol)
-   - Password tidak disimpan dalam plaintext (handled by Supabase Auth)
-   - Enkripsi password dengan bcrypt (handled by Supabase Auth)
-
-4. **HTTP Security**:
-   - HTTPS enforced
-   - SameSite cookie attributes
-   - Secure & HttpOnly cookies
-
 ## Struktur Proyek
 
 ```
