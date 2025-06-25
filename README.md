@@ -1,6 +1,7 @@
-# SEA Catering - Frontend
+# SEA Catering
 
 Aplikasi website SEA Catering menyediakan layanan pemesanan katering sehat dengan pengiriman ke seluruh Indonesia.
+Link Publikasi: https://myriadnseacatering.netlify.app/
 
 ## Deskripsi Proyek
 
